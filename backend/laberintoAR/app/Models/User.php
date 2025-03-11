@@ -45,4 +45,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+
+    public function partidas()
+    {
+        return $this->hasMany(Partida::class, 'usuario_id');
+    }
+
+    public function estadisticas()
+    {
+        return $this->hasOne(Statistics::class, 'usuario_id');
+    }
 }

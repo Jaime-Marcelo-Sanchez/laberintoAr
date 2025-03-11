@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->timestamp('fecha_juego');
             $table->integer('duracion');
             $table->string('resultado');
+            $table->timestamps();
         });
     }
 
