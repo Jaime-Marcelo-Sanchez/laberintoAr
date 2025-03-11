@@ -7,7 +7,10 @@ form.addEventListener("submit", (e) => {
   const valido = validateForm();
 
   if (valido) {
-    window.location.href = "/frontend/laberinto1.html";
+    const user = document.getElementById("username").value;
+    const userpassword = document.getElementById("userpassword").value;
+
+    loginUser(user, userpassword);
   }
 });
 
@@ -17,36 +20,53 @@ function validateForm() {
 
   errorMsg.innerHTML = "";
 
-  // Validar que el nombre de usuario no esté vacío
   if (user == "") {
     errorMsg.innerHTML = "El campo de usuario es obligatorio.";
     return false;
   }
 
-  // Validar que la contraseña no esté vacía
   if (userpassword == "") {
     errorMsg.innerHTML = "El campo de contraseña es obligatorio.";
     return false;
   }
 
-  // Validar que la contraseña tenga al menos 6 caracteres
   if (userpassword.length < 6) {
     errorMsg.innerHTML = "La contraseña debe tener al menos 6 caracteres.";
     return false;
   }
 
-  return loginUser(user, userpassword);
+  return true;
 }
 
-function loginUser(user, userpassword) {
-  const usuario = {
-    user,
-    userpassword,
-  };
+const loginUser = async (user, userpassword) => {
+  const apiUrl = "http://127.0.0.1:8000/api/login";
+  try {
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: user,
+        password: userpassword,
+      }),
+    });
 
-  if (usuario.user == "jaime@gmail.com" && usuario.userpassword == "jaime132") {
-    return true;
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Error en el inicio de sesión");
+    }
+
+    if (data.access_token) {
+      localStorage.setItem("authToken", data.access_token);
+    }
+
+    console.log("Login exitoso:", data);
+
+    window.location.href = "/frontend/home.html";
+  } catch (error) {
+    console.log(error);
+    errorMsg.innerHTML = "Error al iniciar sesión. Verifica tus credenciales.";
   }
-
-  return false;
-}
+};
