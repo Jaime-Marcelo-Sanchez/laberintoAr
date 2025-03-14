@@ -1,54 +1,42 @@
 const form = document.getElementById("form__login");
 const errorMsg = document.getElementById("error-message");
 
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
+document.addEventListener("DOMContentLoaded", async () => {
+  const token = localStorage.getItem("authToken");
 
-  const valido = validateForm();
-
-  if (valido) {
-    const user = document.getElementById("username").value;
-    const userpassword = document.getElementById("userpassword").value;
-
-    loginUser(user, userpassword);
+  if (token) {
+    window.location.href = "/frontend/home.html";
+    return;
   }
 });
 
-function validateForm() {
-  const user = document.getElementById("username").value;
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const username = document.getElementById("username").value;
   const userpassword = document.getElementById("userpassword").value;
 
   errorMsg.innerHTML = "";
 
-  if (user == "") {
-    errorMsg.innerHTML = "El campo de usuario es obligatorio.";
-    return false;
-  }
-
-  if (userpassword == "") {
-    errorMsg.innerHTML = "El campo de contraseña es obligatorio.";
-    return false;
+  if (!username || !userpassword) {
+    errorMsg.innerHTML = "Todos los campos son obligatorios.";
+    return;
   }
 
   if (userpassword.length < 6) {
     errorMsg.innerHTML = "La contraseña debe tener al menos 6 caracteres.";
-    return false;
+    return;
   }
 
-  return true;
-}
-
-const loginUser = async (user, userpassword) => {
-  const apiUrl = "http://127.0.0.1:8000/api/login";
   try {
-    const response = await fetch(apiUrl, {
+    const response = await fetch("http://localhost:8000/api/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username: user,
-        password: userpassword,
+        usuario: username,
+        clave: userpassword,
       }),
     });
 
@@ -58,15 +46,13 @@ const loginUser = async (user, userpassword) => {
       throw new Error(data.message || "Error en el inicio de sesión");
     }
 
-    if (data.access_token) {
-      localStorage.setItem("authToken", data.access_token);
+    if (data.token) {
+      localStorage.setItem("authToken", data.token);
+      window.location.href = "/frontend/home.html";
+    } else {
+      throw new Error("No se recibió un token de autenticación.");
     }
-
-    console.log("Login exitoso:", data);
-
-    window.location.href = "/frontend/home.html";
   } catch (error) {
-    console.log(error);
-    errorMsg.innerHTML = "Error al iniciar sesión. Verifica tus credenciales.";
+    errorMsg.innerHTML = error.message;
   }
-};
+});
