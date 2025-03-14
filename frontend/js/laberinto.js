@@ -3,8 +3,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const resetButton = document.querySelector("#resetButton");
   const camera = document.querySelector("a-scene").camera;
 
-  // Mover la cámara a una nueva posición
-  camera.position.set(0, 0, 20); // X=0, Y=5, Z=10
+  function adjustCamera() {
+    if (AFRAME.utils.device.isMobile()) {
+      camera.position.set(-2, 5, 30); // Posición más alta y alejada en móviles
+    } else {
+      camera.position.set(0, 4, 20); // Posición normal en PC
+    }
+  }
+
+  adjustCamera();
 
   // Definimos el laberinto: '#' = pared, ' ' = camino, 'S' = inicio, 'E' = meta
   const maze = [
