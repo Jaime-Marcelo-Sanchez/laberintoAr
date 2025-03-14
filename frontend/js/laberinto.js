@@ -1,16 +1,21 @@
 document.addEventListener("DOMContentLoaded", () => {
   const marker = document.querySelector("#hiroMarker");
+  const resetButton = document.querySelector("#resetButton");
+  const camera = document.querySelector("a-scene").camera;
+
+  // Mover la cámara a una nueva posición
+  camera.position.set(0, 0, 20); // X=0, Y=5, Z=10
 
   // Definimos el laberinto: '#' = pared, ' ' = camino, 'S' = inicio, 'E' = meta
   const maze = [
     ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"],
-    ["#", "S", " ", " ", " ", "#", " ", " ", " ", "#", " ", " ", "#"],
-    ["#", "#", "#", " ", "#", " ", "#", "#", "#", " ", "#", " ", "#"],
-    ["#", " ", " ", " ", "#", " ", " ", " ", "#", " ", "#", " ", "#"],
+    ["#", "S", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#"],
+    ["#", "#", "#", " ", "#", "#", "#", "#", "#", " ", "#", " ", "#"],
+    ["#", " ", " ", " ", " ", "#", " ", " ", "#", " ", "#", " ", "#"],
     ["#", " ", "#", "#", "#", "#", "#", " ", "#", "#", "#", "#", "#"],
-    ["#", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", "#"],
+    ["#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#"],
     ["#", "#", "#", " ", "#", " ", "#", "#", "#", "#", "#", "#", "#"],
-    ["#", " ", " ", " ", "#", " ", " ", " ", " ", "#", " ", " ", "#"],
+    ["#", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", "#"],
     ["#", " ", "#", "#", "#", " ", "#", "#", "#", " ", "#", " ", "#"],
     ["#", " ", " ", " ", " ", "#", "E", " ", " ", " ", "#", " ", "#"],
     ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"],
@@ -20,11 +25,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const wallHeight = 1; // Altura de las paredes
   const baseHeight = -2; // Ajuste de altura para paredes
 
+  let sphere = null;
+  const startPosition = { x: -4, z: -4, y: -2 }; // Posición inicial de la esfera
+
   // Crear suelo verde
   const floor = document.createElement("a-plane");
-  floor.setAttribute("position", "0 0 -1");
+  floor.setAttribute("position", "0 -1 -1");
   floor.setAttribute("width", maze[0].length);
-  floor.setAttribute("height", maze.length);
+  floor.setAttribute("height", maze.length + 2);
   floor.setAttribute("rotation", "180 0 0");
   floor.setAttribute("color", "green");
   floor.setAttribute("static-body", "");
@@ -32,9 +40,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Crear techo transparente
   const ceiling = document.createElement("a-plane");
-  ceiling.setAttribute("position", "0 0 -3");
+  ceiling.setAttribute("position", "0 -1 -3");
   ceiling.setAttribute("width", maze[0].length);
-  ceiling.setAttribute("height", maze.length);
+  ceiling.setAttribute("height", maze.length + 2);
   ceiling.setAttribute("rotation", "180 0 0");
   ceiling.setAttribute("color", "white");
   ceiling.setAttribute("material", "opacity: 0.2; transparent: true");
@@ -58,39 +66,56 @@ document.addEventListener("DOMContentLoaded", () => {
         wall.setAttribute("static-body", "");
         marker.appendChild(wall);
       } else if (char === "S") {
-        const sphere = document.createElement("a-sphere");
+        sphere = document.createElement("a-sphere");
         sphere.setAttribute("id", "sphere");
         sphere.setAttribute("radius", "0.45");
         sphere.setAttribute("color", "yellow");
-        sphere.setAttribute("position", `${posX} ${posZ} ${baseHeight - 0.5}`);
+        sphere.setAttribute(
+          "position",
+          `${startPosition.x} ${startPosition.z} ${startPosition.y}`
+        );
+        sphere.setAttribute("dynamic-body", "shape: sphere; mass: 2000");
         marker.appendChild(sphere);
       } else if (char === "E") {
         const goal = document.createElement("a-box");
-        goal.setAttribute("position", `${posX} ${posZ} ${baseHeight + 0.5}`);
+        goal.setAttribute("position", `${posX} ${posZ} ${baseHeight}`);
         goal.setAttribute("width", blockSize);
         goal.setAttribute("height", 0.5);
         goal.setAttribute("depth", blockSize);
-        goal.setAttribute("color", "green");
+        goal.setAttribute("color", "yellow");
+        goal.setAttribute("static-body", "");
         goal.setAttribute("id", "goal");
         marker.appendChild(goal);
       }
     }
   }
 
-  function updatePhysics(enabled) {
-    if (enabled) {
-      sphere.setAttribute("dynamic-body", "shape: sphere; mass: 2000");
-    } else {
+  function resetSpherePosition() {
+    if (sphere) {
+      // Desactiva las físicas antes de mover la esfera
       sphere.removeAttribute("dynamic-body");
+
+      // Reinicia la posición dentro del laberinto
+      sphere.setAttribute(
+        "position",
+        `${startPosition.x} ${startPosition.z} ${startPosition.y}`
+      );
+
+      // Reactiva las físicas después de un pequeño retraso
+      setTimeout(() => {
+        sphere.setAttribute("dynamic-body", "shape: sphere; mass: 2000");
+      }, 100);
     }
   }
 
   marker.addEventListener("markerFound", () => {
-    updatePhysics(true);
+    if (sphere) {
+      sphere.setAttribute("dynamic-body", "shape: sphere; mass: 2000");
+    }
   });
 
   marker.addEventListener("markerLost", () => {
-    updatePhysics(false);
+    resetSpherePosition();
   });
 
   sphere.addEventListener("collide", (event) => {
@@ -98,4 +123,6 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("¡Has llegado a la meta!");
     }
   });
+
+  resetButton.addEventListener("click", resetSpherePosition);
 });

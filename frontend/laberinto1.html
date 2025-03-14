@@ -14,8 +14,24 @@
     <!--Libreria para transformar la escena VR a AR con Aframe-->
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 
-    <!--Añadir físicas a la esfera-->
     <script src="/frontend/js/laberinto.js" defer></script>
+
+    <!--Estilos de Bootstrap-->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+      defer
+    ></script>
+    <script src="/frontend/js/register.js" defer></script>
+
+    <link rel="stylesheet" href="/frontend/css/laberinto.css" />
   </head>
   <body>
     <a-scene
@@ -24,37 +40,9 @@
       physics="debug: true"
     >
       <!-- Marcador con el codigo Hiro -->
-      <a-marker preset="hiro" id="hiroMarker">
-        <!-- Suelo inferior-->
-        <!-- <a-plane
-          id="suelo-visible"
-          static-body
-          position="0 0 -1"
-          rotation="180 0 0"
-          width="3"
-          height="3"
-          color="green"
-        ></a-plane> -->
-        <!-- position= "x z y"-->
-        <!-- Esfera -->
-        <!-- <a-sphere
-          id="sphere"
-          position="0 1 -2"
-          radius="0.2"
-          color="yellow"
-        ></a-sphere> -->
-
-        <!--Techo-->
-        <!-- <a-plane
-          id="techo-transparente"
-          static-body
-          position="0 0 -3"
-          width="3"
-          height="3"
-          color="white"
-          material="opacity: 0.2; transparent: true"
-        ></a-plane> -->
-      </a-marker>
+      <a-marker preset="hiro" id="hiroMarker"> </a-marker>
     </a-scene>
+
+    <button id="resetButton" class="btn btn-info">⟳</button>
   </body>
 </html>

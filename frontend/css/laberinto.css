@@ -5,5 +5,11 @@
 }
 
 body {
-  overflow: hidden;
+}
+
+#resetButton {
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
 }

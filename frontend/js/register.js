@@ -70,14 +70,24 @@ const registerUser = async (fullname, email, username, userpassword) => {
       }),
     });
 
-    const data = await response.json();
+    // Leer la respuesta como texto para ver si hay errores en formato JSON
+    const text = await response.text();
+    alert("Raw Response:\n" + text); // Mostrar respuesta sin procesar
 
-    if (!response.ok) {
-      throw new Error(data.message || "Error al registrarse");
+    try {
+      const data = JSON.parse(text);
+      alert("Parsed JSON:\n" + JSON.stringify(data, null, 2)); // Mostrar JSON bien formateado
+
+      if (!response.ok) {
+        throw new Error(data.message || "Error al registrarse");
+      }
+
+      alert("Registro exitoso. Redirigiendo al login...");
+    } catch (jsonError) {
+      alert("Error al procesar JSON:\n" + jsonError.message);
     }
-
-    window.location.href = "/frontend/login.html";
   } catch (error) {
-    errorMsg.innerHTML = "Error al registrarse. Intenta nuevamente.";
+    console.log(error);
+    alert("Error al registrarse:\n" + error.message);
   }
 };
