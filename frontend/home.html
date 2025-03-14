@@ -9,20 +9,22 @@
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="/frontend/css/home.css" />
+    <script src="/frontend/js/home.js" defer></script>
     <title>Bienvenido</title>
   </head>
   <body>
     <div class="container mt-5">
-      <h1>Bienvenido</h1>
+      <h1 id="welcome-message">Bienvenido</h1>
       <p>¡Qué bueno verte aquí! Elige una opción:</p>
 
       <div class="d-flex justify-content-center gap-3">
-        <a href="#" class="btn btn-primary">Ir a mi perfil</a>
+        <a href="/frontend/perfil.html" class="btn btn-primary"
+          >Ir a mi perfil</a
+        >
         <a href="/frontend/laberinto1.html" class="btn btn-info"
           >Jugar un nivel</a
         >
-        <a href="/frontend/login.html" class="btn btn-danger">Cerrar sesión</a>
+        <button id="logout-btn" class="btn btn-danger">Cerrar sesión</button>
       </div>
     </div>
   </body>
