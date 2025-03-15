@@ -40,15 +40,17 @@ function validateForm() {
 
 const loginUser = async (user, userpassword) => {
   const apiUrl = "http://127.0.0.1:8000/api/login";
+
   try {
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Accept": "application/json"
       },
       body: JSON.stringify({
         username: user,
-        password: userpassword,
+        password: userpassword
       }),
     });
 
@@ -60,13 +62,12 @@ const loginUser = async (user, userpassword) => {
 
     if (data.access_token) {
       localStorage.setItem("authToken", data.access_token);
+      console.log("Login exitoso:", data);
+      window.location.href = "laberinto1.html";
     }
 
-    console.log("Login exitoso:", data);
-
-    window.location.href = "/frontend/home.html";
   } catch (error) {
-    console.log(error);
-    errorMsg.innerHTML = "Error al iniciar sesión. Verifica tus credenciales.";
+    console.error(error);
+    document.getElementById("error-message").innerText = "Error: " + error.message;
   }
 };

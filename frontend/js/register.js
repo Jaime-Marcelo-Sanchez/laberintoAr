@@ -61,6 +61,7 @@ const registerUser = async (fullname, email, username, userpassword) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Accept": "application/json"
       },
       body: JSON.stringify({
         name: fullname,
@@ -76,7 +77,7 @@ const registerUser = async (fullname, email, username, userpassword) => {
       throw new Error(data.message || "Error al registrarse");
     }
 
-    window.location.href = "/frontend/login.html";
+    window.location.href = "/login.html";
   } catch (error) {
     errorMsg.innerHTML = "Error al registrarse. Intenta nuevamente.";
   }
