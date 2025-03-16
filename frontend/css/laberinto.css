@@ -7,9 +7,10 @@
 body {
 }
 
-#resetButton {
+#btnContainer {
   position: absolute;
-  bottom: 5%;
+  width: 150px;
   left: 50%;
+  bottom: 5%;
   transform: translateX(-50%);
 }

@@ -9,7 +9,7 @@
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
-    <script src="/frontend/js/home.js" defer></script>
+    <script type="module" src="/frontend/js/home.js" defer></script>
     <title>Bienvenido</title>
   </head>
   <body>
@@ -17,13 +17,18 @@
       <h1 id="welcome-message">Bienvenido</h1>
       <p>¡Qué bueno verte aquí! Elige una opción:</p>
 
+      <div class="mb-3">
+        <label for="nivelSelect" class="form-label">Selecciona un nivel:</label>
+        <select id="nivelSelect" class="form-select">
+          <option value="">-- Escoge un nivel --</option>
+        </select>
+      </div>
+
       <div class="d-flex justify-content-center gap-3">
         <a href="/frontend/perfil.html" class="btn btn-primary"
           >Ir a mi perfil</a
         >
-        <a href="/frontend/laberinto1.html" class="btn btn-info"
-          >Jugar un nivel</a
-        >
+        <button id="jugar-btn" class="btn btn-info">Jugar</button>
         <button id="logout-btn" class="btn btn-danger">Cerrar sesión</button>
       </div>
     </div>

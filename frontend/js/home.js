@@ -1,32 +1,22 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const welcomeMessage = document.getElementById("welcome-message");
-  const logoutBtn = document.getElementById("logout-btn");
+import { HomeController } from "./controllers/HomeController.js";
 
-  // Obtener el token desde el localStorage
-  const token = localStorage.getItem("authToken");
-
-  if (!token) {
-    // Si no hay token, redirigir al login
-    window.location.href = "/frontend/login.html";
-    return;
+document.addEventListener("DOMContentLoaded", async () => {
+  if (
+    localStorage.getItem("partidaIniciada") ||
+    localStorage.getItem("contadorTiempo")
+  ) {
+    localStorage.removeItem("partidaIniciada");
+    localStorage.removeItem("contadorTiempo");
   }
 
-  try {
-    // Decodificar el token para obtener el usuario
-    const payload = JSON.parse(atob(token.split(".")[1])); // Decodificar JWT
-    const username = payload.usuario; // Extraer el nombre de usuario
+  await HomeController.cargarPerfilYMostrar();
+  HomeController.cargarNiveles();
 
-    // Personalizar mensaje de bienvenida
-    welcomeMessage.textContent = `Bienvenido, ${username}`;
-  } catch (error) {
-    console.error("Error al leer el token:", error);
-    localStorage.removeItem("authToken");
-    window.location.href = "/frontend/login.html";
-  }
+  document.getElementById("jugar-btn").addEventListener("click", () => {
+    HomeController.jugarNivel();
+  });
 
-  // Cerrar sesión
-  logoutBtn.addEventListener("click", () => {
-    localStorage.removeItem("authToken"); // Eliminar token
-    window.location.href = "/frontend/login.html"; // Redirigir al login
+  document.getElementById("logout-btn").addEventListener("click", () => {
+    HomeController.cerrarSesion();
   });
 });
