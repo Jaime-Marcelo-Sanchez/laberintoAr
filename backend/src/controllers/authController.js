@@ -76,6 +76,11 @@ const getProfile = async (req, res) => {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
+    // Actualizar en la base de datos las partidas en progreso a fallado
+    const updateQuery =
+      "UPDATE partida SET resultado = 'Sin terminar' WHERE usuario_id = ? AND resultado = 'en progreso'";
+    await db.query(updateQuery, [userId]);
+
     // Obtener partidas del usuario con información de nivel
     const partidasQuery = `
       SELECT p.id, p.nivel_id, n.nombre AS nivel_nombre, n.dificultad, 
